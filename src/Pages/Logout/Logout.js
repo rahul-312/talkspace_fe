@@ -1,4 +1,3 @@
-// src/Pages/Logout/Logout.js
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -12,6 +11,7 @@ const Logout = () => {
     const logoutUser = async () => {
       try {
         const refreshToken = localStorage.getItem('refresh_token');
+        const accessToken = localStorage.getItem('access_token'); // Get access token
 
         if (!refreshToken) {
           console.log("No refresh token found.");
@@ -19,8 +19,21 @@ const Logout = () => {
           return;
         }
 
-        // Send POST request to logout API
-        await axios.post(`${BASE_URL}logout/`, { refresh: refreshToken });
+        if (!accessToken) {
+          console.log("No access token found.");
+          navigate('/login'); // Redirect to login if no access token is found
+          return;
+        }
+
+        // Send POST request to logout API with Authorization header
+        await axios.post(`${BASE_URL}logout/`, 
+          { refresh: refreshToken }, 
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}` // Add the access token here
+            }
+          }
+        );
 
         // Clear tokens from localStorage
         localStorage.removeItem('access_token');
