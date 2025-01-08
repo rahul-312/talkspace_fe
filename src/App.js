@@ -22,10 +22,10 @@ function AppContent() {
   return (
     <div className="app-container">
       {/* Conditionally render Sidebar for authenticated users */}
-      {isAuthenticated && location.pathname !== "/login" && <Sidebar />}
+      {isAuthenticated && location.pathname !== "/login" && location.pathname !== "/logout" && <Sidebar />}
 
       <div className={`main-content ${isAuthenticated ? 'with-sidebar' : ''}`}>
-        {location.pathname !== "/login" && <Navbar />}
+        {location.pathname !== "/login" && location.pathname !== "/logout" && <Navbar />}
         <Routes>
           <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
           <Route path="/login" element={<Login />} />
@@ -34,7 +34,7 @@ function AppContent() {
           <Route path="/contact" element={isAuthenticated ? <ContactUs /> : <Navigate to="/login" />} />
           <Route path="/logout" element={<Logout />} />
         </Routes>
-        {location.pathname !== "/login" && <Footer />}
+        {location.pathname !== "/login" && location.pathname !== "/logout" && <Footer />}
       </div>
     </div>
   );
