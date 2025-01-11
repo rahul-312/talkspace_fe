@@ -3,72 +3,116 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "../styles/Sidebar.css";
 
-// Get the logged-in user's ID from the token
+// Function to decode JWT and get the user ID
 const getLoggedInUserId = () => {
   const token = localStorage.getItem('access_token');
-  if (token) {
-    const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decoding the JWT to get the user info
-    return decodedToken.user_id; // Assuming the user ID is stored as "user_id" in the token
+  if (!token) return null;
+
+  try {
+    const decodedToken = JSON.parse(atob(token.split('.')[1]));
+    return decodedToken.user_id; // Assuming user ID is stored as "user_id" in the token
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    return null;
   }
-  return null;
 };
 
-const BASE_URL = 'http://127.0.0.1:8000/users/';
+const BASE_URL = 'http://127.0.0.1:8000/';
 
 const Sidebar = () => {
   const [friends, setFriends] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchFriends = async () => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
-        const response = await axios.get(`${BASE_URL}friend-list/`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`
-          }
+        const userId = getLoggedInUserId();
+        if (!userId) {
+          setError('You are not logged in.');
+          return;
+        }
+
+        // Fetch friends list
+        const friendsResponse = await axios.get(`${BASE_URL}users/friend-list/`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
         });
-        setFriends(response.data.friends);
-      } catch (error) {
-        console.error('Error fetching friends:', error);
+        setFriends(friendsResponse.data.friends || []);
+
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError('Failed to fetch data. Please try again.');
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchFriends();
+    fetchData();
   }, []);
 
   const handleFriendClick = async (friend) => {
     const loggedInUserId = getLoggedInUserId();
-  
-    if (loggedInUserId) {
-      const requestData = {
-        users: [friend.id, loggedInUserId],  // Ensure the users array is correct
-      };
-  
-      console.log("Request Data:", requestData);  // Log request data to check
-  
-      try {
-        const response = await axios.post(`${BASE_URL}chatrooms/`, requestData, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-          },
+    if (!loggedInUserId || !friend?.id) {
+      setError('Invalid user or friend data.');
+      return;
+    }
+
+    const requestData = { users: [loggedInUserId, friend.id] };
+
+    try {
+      // Check if a chat room already exists
+      const response = await axios.get(`${BASE_URL}users/chatrooms/`, {
+        params: { users: requestData.users },
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+      });
+
+      if (response.data?.length > 0) {
+        navigate(`/chat/${response.data[0].id}`); // Navigate to the existing chat room
+      } else {
+        // Create a new chat room
+        const createRoomResponse = await axios.post(`${BASE_URL}users/chatrooms/`, requestData, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
         });
-  
-        navigate(`/chat/${response.data.id}`);
-      } catch (error) {
-        console.error('Error creating chat room:', error.response ? error.response.data : error.message);
+        navigate(`/chat/${createRoomResponse.data.id}`); // Navigate to the new chat room
       }
+    } catch (err) {
+      console.error('Error handling chat room:', err.response?.data || err.message);
+      setError('Could not handle chat room. Please try again.');
     }
   };
 
   return (
     <div className="sidebar">
-      <ul className="sidebar-menu">
-        {friends.map((friend) => (
-          <li key={friend.id} onClick={() => handleFriendClick(friend)}>
-            <span>{friend.username}</span>
-          </li>
-        ))}
-      </ul>
+      {loading ? (
+        <div className="loading-spinner">Loading...</div>
+      ) : error ? (
+        <div className="error-message">{error}</div>
+      ) : (
+        <>
+          <div className="sidebar-section">
+            <h3>Chats</h3>
+            <ul className="sidebar-menu">
+              {friends.length === 0 ? (
+                <li className="no-friends">No friends found</li>
+              ) : (
+                friends.map((friend) => (
+                  <li
+                    key={friend.id}
+                    className="friend-item"
+                    onClick={() => handleFriendClick(friend)}
+                  >
+                    <span>{friend.username}</span>
+                  </li>
+                ))
+              )}
+            </ul>
+          </div>
+        </>
+      )}
     </div>
   );
 };
