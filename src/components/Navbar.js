@@ -20,6 +20,8 @@ function Navbar() {
         <div className={`navbar-menu ${isMobileMenuOpen ? 'active' : ''}`}>
           <ul>
             <li><NavLink exact to="/" activeClassName="active">Dashboard</NavLink></li>
+            <li><NavLink to="/add-friends" activeClassName="active">Add Friends</NavLink></li>
+            <li><NavLink to="/chat" activeClassName="active">Chat</NavLink></li>
             <li><NavLink to="/about" activeClassName="active">About Us</NavLink></li>
             <li><NavLink to="/contact" activeClassName="active">Contact Us</NavLink></li>
             <li><NavLink to="/logout" activeClassName="active">Logout</NavLink></li>
