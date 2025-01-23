@@ -1,0 +1,103 @@
+/* AddFriends.css */
+
+/* Container for the entire AddFriends page */
+.add-friends-container {
+  padding-top: 70px; /* Adjust this value based on the navbar height */
+  margin: 0 auto;
+  max-width: 800px;
+  font-family: Arial, sans-serif;
+}
+
+/* Header section */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Pending Requests Button */
+.pending-requests-button {
+  font-size: 16px;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.pending-requests-button:hover {
+  background-color: #0056b3;
+}
+
+/* Requests List */
+.requests-list {
+  margin-top: 20px;
+}
+
+.request-item {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.request-actions button {
+  margin-left: 10px;
+}
+
+/* Search Bar */
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.friend-search-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.add-friend-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  background-color: #28a745;
+  color: white;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.add-friend-button:hover {
+  background-color: #218838;
+}
+
+/* Friends List */
+.friends-list .friend {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin-bottom: 10px;
+}
+
+/* Message Section */
+.message {
+  margin-top: 20px;
+  color: #007bff;
+  font-weight: bold;
+}
