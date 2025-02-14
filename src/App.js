@@ -8,7 +8,8 @@ import Navbar from "./components/Navbar";
 import Login from "./Pages/Login/Login";
 import Logout from "./Pages/Logout/Logout";
 import AddFriends from './Pages/AddFriends/AddFriends';
-import ChatRoom from './components/ChatRoom'; // Corrected path for ChatRoom
+import FriendList from './Pages/FriendList/friend_list'; // Import FriendList component
+import ChatRoom from './components/ChatRoomList'; // Import ChatRoom component
 import './styles/App.css';
 
 // Reusable PrivateRoute component to handle protected routes
@@ -50,7 +51,11 @@ function AppContent() {
           path="/add-friends"
           element={<PrivateRoute isAuthenticated={isAuthenticated} element={<AddFriends />} />}
         />
-        {/* Add the new route for ChatRoom */}
+        <Route
+          path="/friend-list"
+          element={<PrivateRoute isAuthenticated={isAuthenticated} element={<FriendList />} />}
+        />
+        {/* Chat Room route */}
         <Route
           path="/chatroom"
           element={<PrivateRoute isAuthenticated={isAuthenticated} element={<ChatRoom />} />}

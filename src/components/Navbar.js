@@ -19,12 +19,62 @@ function Navbar() {
         </div>
         <div className={`navbar-menu ${isMobileMenuOpen ? 'active' : ''}`}>
           <ul>
-            <li><NavLink exact to="/" activeClassName="active">Dashboard</NavLink></li>
-            <li><NavLink to="/add-friends" activeClassName="active">Add Friends</NavLink></li>
-            <li><NavLink to="/chatroom" className={({ isActive }) => (isActive ? "active" : "")}>Chat</NavLink></li>
-            <li><NavLink to="/about" activeClassName="active">About Us</NavLink></li>
-            <li><NavLink to="/contact" activeClassName="active">Contact Us</NavLink></li>
-            <li><NavLink to="/logout" activeClassName="active">Logout</NavLink></li>
+            <li>
+              <NavLink 
+                to="/" 
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                Dashboard
+              </NavLink>
+            </li>
+            <li>
+              <NavLink 
+                to="/add-friends" 
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                Add Friends
+              </NavLink>
+            </li>
+            <li>
+              <NavLink 
+                to="/friend-list" 
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                Friend List
+              </NavLink>
+            </li>
+            <li>
+              <NavLink 
+                to="/chatroom" 
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                Chat
+              </NavLink>
+            </li>
+            <li>
+              <NavLink 
+                to="/about" 
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                About Us
+              </NavLink>
+            </li>
+            <li>
+              <NavLink 
+                to="/contact" 
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                Contact Us
+              </NavLink>
+            </li>
+            <li>
+              <NavLink 
+                to="/logout" 
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                Logout
+              </NavLink>
+            </li>
           </ul>
         </div>
         <div className="navbar-toggle" onClick={toggleMobileMenu}>
