@@ -2,34 +2,27 @@ import React, { useState, useEffect } from "react";
 import {
   sendFriendRequest,
   fetchFriendRequests,
-  fetchFriendsList,
-  respondToFriendRequest, // Updated import
-} from "../../friendApi"; // Ensure this is the correct API file path
+  respondToFriendRequest,
+} from "../../friendApi";
 import "./AddFriends.css";
 
 function AddFriends() {
   const [friendName, setFriendName] = useState("");
-  const [friendList, setFriendList] = useState([]);
   const [requests, setRequests] = useState([]);
   const [showRequests, setShowRequests] = useState(false);
-  const [filteredFriends, setFilteredFriends] = useState([]);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const loadFriendsAndRequests = async () => {
+    const loadFriendRequests = async () => {
       try {
         const requestsData = await fetchFriendRequests();
         setRequests(requestsData);
-
-        const friendsData = await fetchFriendsList();
-        setFriendList(friendsData);
-        setFilteredFriends(friendsData);
       } catch (error) {
         setMessage(error.error || "An error occurred.");
       }
     };
 
-    loadFriendsAndRequests();
+    loadFriendRequests();
   }, []);
 
   const handleAddFriend = async () => {
@@ -46,23 +39,13 @@ function AddFriends() {
     }
   };
 
-  const handleSearchChange = (e) => {
-    const searchValue = e.target.value.toLowerCase();
-    setFriendName(searchValue);
-    setFilteredFriends(
-      friendList.filter((friend) =>
-        friend.username.toLowerCase().includes(searchValue)
-      )
-    );
-  };
-
   const toggleRequests = () => {
     setShowRequests(!showRequests);
   };
 
   const handleAcceptRequest = async (requestId) => {
     try {
-      await respondToFriendRequest(requestId, "accept"); // Accept the request
+      await respondToFriendRequest(requestId, "accept");
       setRequests(requests.filter((request) => request.id !== requestId));
       setMessage("Friend request accepted!");
     } catch (error) {
@@ -72,7 +55,7 @@ function AddFriends() {
 
   const handleRejectRequest = async (requestId) => {
     try {
-      await respondToFriendRequest(requestId, "reject"); // Reject the request
+      await respondToFriendRequest(requestId, "reject");
       setRequests(requests.filter((request) => request.id !== requestId));
       setMessage("Friend request rejected.");
     } catch (error) {
@@ -84,7 +67,7 @@ function AddFriends() {
     <div className="add-friends-container">
       {/* Header */}
       <div className="header">
-        <h1>Your Friends</h1>
+        <h1>Add Friends</h1>
         <button
           className="btn btn-primary pending-requests-button"
           onClick={toggleRequests}
@@ -123,31 +106,18 @@ function AddFriends() {
         </div>
       )}
 
-      {/* Search Bar */}
+      {/* Add Friend Input */}
       <div className="search-bar">
         <input
           type="text"
-          placeholder="Search friends or add new..."
+          placeholder="Enter username..."
           value={friendName}
-          onChange={handleSearchChange}
+          onChange={(e) => setFriendName(e.target.value)}
           className="form-control friend-search-input"
         />
         <button onClick={handleAddFriend} className="btn btn-success add-friend-button">
-          Add Friend
+          Send Request
         </button>
-      </div>
-
-      {/* Friends List */}
-      <div className="friends-list">
-        {filteredFriends.length > 0 ? (
-          filteredFriends.map((friend) => (
-            <div key={friend.id} className="friend">
-              <p>{friend.username}</p>
-            </div>
-          ))
-        ) : (
-          <p>No friends found.</p>
-        )}
       </div>
 
       {message && <p className="message">{message}</p>}
